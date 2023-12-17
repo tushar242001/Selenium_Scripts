@@ -1,0 +1,111 @@
+  ______Selenium Script using Java and Maven Tool______
+Statement : 
+
+1.   Open YouTube  “https://www.youtube.com”
+2.   Navigate to Trending music 
+3.   Play the 5th trending song 
+4.   Sort the comments by newest first and get the first Comment
+
+
+Implementation Code in Java : 
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.interactions.Actions;
+
+public class YoutubeAutomation {
+	@SuppressWarnings("deprecation")
+	public static void main(String[] args) throws InterruptedException {
+
+		System.setProperty("webdriver.chrome.driver", "/Users/Folder/chromedriver-mac-arm64/chromedriver");
+
+		WebDriver driver = new ChromeDriver();
+		
+		driver.manage().window().maximize();
+		
+		
+		driver.get("https://www.youtube.com/");
+		
+		
+		 List<WebElement> elements = driver.findElements(By.xpath("//*[@id='guide-icon']"));
+		 if (!elements.isEmpty()) {
+			 System.out.println("Element present");
+	            
+	            WebElement firstElement = elements.get(0);
+	        } else {
+	            System.out.println("Element not found");
+	        }
+		 
+		 WebElement trendingTab = driver.findElement(By.linkText("Trending"));
+	     trendingTab.click();
+		 
+         
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100));
+	        wait.until(ExpectedConditions.urlContains("trending"));
+	        
+	        WebDriverWait wait1 = new WebDriverWait(driver,Duration.ofSeconds(50));
+	        
+	        WebElement musicTab = wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"tabsContent\"]/yt-tab-group-shape/div[1]/yt-tab-shape[2]/div[1]")));
+	        musicTab.click();
+	        
+	        Thread.sleep(1500);
+	        
+	        JavascriptExecutor jse  =(JavascriptExecutor) driver;
+	        jse.executeScript("window.scrollBy(0,400)");
+	        
+	        Thread.sleep(1500);
+	        
+	        jse.executeScript("window.scrollBy(0,-200)");
+	        
+	        WebElement fifthVideo = wait1.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//ytd-video-renderer[5]//div[1]//div[1]//div[1]//div[1]//h3[1]//a[1]")));
+	        fifthVideo.click();
+	        
+	        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("html5-video-player")));
+	        
+	        
+	        Thread.sleep(9000);
+
+            jse.executeScript("window.scrollBy(0,500)");
+	        
+	        Thread.sleep(1500);
+	        
+//	        jse.executeScript("window.scrollBy(0,-200)");
+	        
+	        WebElement sortMenu = driver.findElement(By.xpath("//*[@id='icon-label']"));
+	        sortMenu.click();
+	        Thread.sleep(1500);
+
+	        WebElement newestFirstOption = driver.findElement(By.xpath("/html[1]/body[1]/ytd-app[1]/div[1]/ytd-page-manager[1]/ytd-watch-flexy[1]/div[5]/div[1]/div[1]/div[2]/ytd-comments[1]/ytd-item-section-renderer[1]/div[1]/ytd-comments-header-renderer[1]/div[1]/span[1]/yt-sort-filter-sub-menu-renderer[1]/yt-dropdown-menu[1]/tp-yt-paper-menu-button[1]/tp-yt-iron-dropdown[1]/div[1]/div[1]/tp-yt-paper-listbox[1]/a[2]/tp-yt-paper-item[1]/tp-yt-paper-item-body[1]/div[1]/div[1]"));
+	        newestFirstOption.click();
+	        
+
+	        // Wait for comments to load
+	        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("contents")));
+	        
+	        Thread.sleep(5000);
+	        // 5. Get the first comment
+	        WebElement firstCommentElement = driver.findElement(By.xpath("//*[@id='content-text']"));
+	        String firstComment = firstCommentElement.getText();
+	        System.out.println("First Comment: " + firstComment);
+
+	        // Close the browser window
+	        driver.quit();
+	
+			 //driver.quit();
+		}
+
+
+}
+
+
+
